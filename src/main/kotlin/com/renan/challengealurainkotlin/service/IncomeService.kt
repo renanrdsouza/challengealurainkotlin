@@ -14,9 +14,11 @@ class IncomeService(
         val incomes = incomeRepository.findByDescriptionIgnoreCase(incomeToSave.description)
 
         if (incomes.isEmpty) {
-            return incomeRepository.save(incomeToSave)
+            return save(incomeToSave)
         } else {
             throw AlreadyExistsException("Income already exists in database.")
         }
     }
+
+    fun save(income: Income) = incomeRepository.save(income)
 }

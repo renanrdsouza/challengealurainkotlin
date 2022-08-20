@@ -34,7 +34,7 @@ class IncomeServiceTest {
 
     @Test
     @DisplayName("given a income, should save it if there's no income with same description in database")
-    fun firstTest() {
+    fun shouldSaveIncome() {
         val income = TestUtils().createIncome()
 
         every { repository.findByDescriptionIgnoreCase(any()) } returns Optional.empty()
@@ -44,5 +44,18 @@ class IncomeServiceTest {
 
         verify { repository.findByDescriptionIgnoreCase(any()) }
         assertEquals(income, incomeSaved)
+    }
+
+    @Test
+    @DisplayName("given a income, should throw an exception if there's a income with same description in database")
+    fun shouldTrhowAnException() {
+        val income = TestUtils().createIncome()
+
+        every { repository.findByDescriptionIgnoreCase(income.description) } returns Optional.of(income)
+        every { repository.save(income) } returns income
+
+        Assertions.assertThrows(AlreadyExistsException::class.java) {
+            service.insert(income)
+        }
     }
 }
