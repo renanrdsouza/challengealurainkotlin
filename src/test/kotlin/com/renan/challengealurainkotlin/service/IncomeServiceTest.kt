@@ -2,6 +2,7 @@ package com.renan.challengealurainkotlin.service
 
 
 import com.renan.challengealurainkotlin.exception.AlreadyExistsException
+import com.renan.challengealurainkotlin.exception.NotFoundException
 import com.renan.challengealurainkotlin.repository.IncomeRepository
 import com.renan.challengealurainkotlin.testutils.TestUtils
 import io.mockk.MockKAnnotations
@@ -56,6 +57,33 @@ class IncomeServiceTest {
 
         Assertions.assertThrows(AlreadyExistsException::class.java) {
             service.insert(income)
+        }
+    }
+
+    @Test
+    @DisplayName("given an id, should return the correspondent income if it is present in database")
+    fun shouldReturnAnIncome() {
+        val id: Long = 1
+        val fakeIncome = TestUtils().createIncome(id = id)
+
+        every { repository.save(fakeIncome) } returns fakeIncome
+        every { repository.findById(1) } returns Optional.of(fakeIncome)
+
+        repository.save(fakeIncome)
+        val income = service.getBy(id)
+
+        assertEquals(fakeIncome, income)
+    }
+
+    @Test
+    @DisplayName("given an id, should return throw an exception if it isn't present in database")
+    fun shouldNotReturnAnIncome() {
+        val id: Long = 1
+
+        every { repository.findById(1) } returns Optional.empty()
+
+        Assertions.assertThrows(NotFoundException::class.java) {
+            service.getBy(id)
         }
     }
 }

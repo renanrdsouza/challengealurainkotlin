@@ -6,12 +6,17 @@ import java.time.LocalDate
 
 class TestUtils {
 
-    fun createIncome(): Income {
+    fun createIncome(
+        id : Long? = null,
+        description: String = "Any",
+        amount: BigDecimal = BigDecimal("100"),
+        date: LocalDate = LocalDate.now()
+    ): Income {
         return Income(
-            id = null,
-            description = "Any",
-            amount = BigDecimal("100"),
-            date = LocalDate.now()
+            id = id,
+            description = description,
+            amount = amount,
+            date = date
         )
     }
 }

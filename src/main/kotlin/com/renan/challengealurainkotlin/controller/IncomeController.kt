@@ -17,6 +17,7 @@ class IncomeController(
 
     companion object {
         const val INCOME_PATH = "/incomes"
+        const val ID_PATH = "/{id}"
     }
 
     @PostMapping
@@ -25,8 +26,18 @@ class IncomeController(
         uriBuilder: UriComponentsBuilder
     ): ResponseEntity<Income> {
         incomeService.insert(income)
-        val uri = uriBuilder.path("/incomes").build().toUri()
+        val uri = uriBuilder.path(INCOME_PATH).build().toUri()
 
         return ResponseEntity.created(uri).build()
+    }
+
+    @GetMapping(INCOME_PATH, ID_PATH)
+    fun getIncome(@PathVariable id: Long): ResponseEntity<Income> {
+        return ResponseEntity.ok().body(incomeService.getBy(id))
+    }
+
+    @DeleteMapping(INCOME_PATH, ID_PATH)
+    fun deleteIncome(@PathVariable id: Long) {
+        incomeService.delete(id)
     }
 }
